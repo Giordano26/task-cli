@@ -1,0 +1,48 @@
+#ifndef TASK_H
+#define TASK_H
+#include <string>
+
+class Task {
+public:
+    enum class Status {
+        TODO,
+        IN_PROGRESS,
+        DONE
+    };
+
+    // Constructor
+    Task(const std::string& id, const std::string& description);
+    Task(const std::string& id, 
+        const std::string& description, 
+        const std::string& status, const std::string& createdAt, 
+        const std::string& updatedAt
+    );
+
+
+    // Setters
+    void setDescription(const std::string& description);
+    void setStatus(Status status);
+    void setUpdatedAt(const std::string& updatedAt);
+
+    // Getters
+    std::string getId() const;
+    std::string getDescription() const;
+    std::string getStatus() const; 
+    std::string getCreatedAt() const;
+    std::string getUpdatedAt() const;
+    
+private:
+    const std::string id;
+    std::string description;
+    Status status;
+    const std::string createdAt;
+    std::string updatedAt;
+
+    // Helper methods
+    std::string nowToString();
+    std::string statusToString(Status status) const;
+    Status stringToStatus(const std::string& status);
+
+};
+
+#endif
