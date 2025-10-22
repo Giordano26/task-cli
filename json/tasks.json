@@ -1,8 +1,19 @@
 {
-  "nextId": 4,
+  "nextId": 3,
   "tasks": [
-    {"id": "1", "description": "Task 1"},
-    {"id": "2", "description": "Task 2"},
-    {"id": "3", "description": "Task 3"}
+    {
+      "id": "1",
+      "description": "Task 1",
+      "status": "TODO",
+      "createdAt": "2025-10-22 14:30:45",
+      "updatedAt": "2025-10-22 14:30:45"
+    },
+    {
+      "id": "2",
+      "description": "Task 2",
+      "status": "IN_PROGRESS",
+      "createdAt": "2025-10-22 14:31:00",
+      "updatedAt": "2025-10-22 15:00:00"
+    }
   ]
 }
