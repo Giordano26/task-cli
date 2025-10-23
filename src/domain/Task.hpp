@@ -12,9 +12,11 @@ public:
 
     // Constructor
     Task(const std::string& id, const std::string& description);
+    
     Task(const std::string& id, 
         const std::string& description, 
-        const std::string& status, const std::string& createdAt, 
+        Status status, 
+        const std::string& createdAt, 
         const std::string& updatedAt
     );
 
@@ -30,6 +32,10 @@ public:
     std::string getStatus() const; 
     std::string getCreatedAt() const;
     std::string getUpdatedAt() const;
+
+    //Helper methods
+    static std::string statusToJsonString(Status status);
+    static Status jsonStringToStatus(const std::string& status);
     
 private:
     const std::string id;
@@ -40,8 +46,7 @@ private:
 
     // Helper methods
     std::string nowToString();
-    std::string statusToString(Status status) const;
-    Status stringToStatus(const std::string& status);
+    std::string statusToDisplay(Status status) const;    
 
 };
 

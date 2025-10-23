@@ -15,12 +15,12 @@ Task::Task(const std::string& id, const std::string& description)
 
 Task::Task(const std::string& id, 
            const std::string& description, 
-           const std::string& status,
+           Status status,
            const std::string& createdAt, 
            const std::string& updatedAt)
  : id(id),
    description(description),
-   status(stringToStatus(status)),
+   status(status),
    createdAt(createdAt),
    updatedAt(updatedAt)
 { }
@@ -46,7 +46,7 @@ std::string Task::getDescription() const {
 }
 
 std::string Task::getStatus() const {
-    return statusToString(status);
+    return statusToDisplay(status);
 }
 
 std::string Task::getCreatedAt() const {
@@ -57,24 +57,29 @@ std::string Task::getUpdatedAt() const {
     return updatedAt;
 }
 
-std::string Task::statusToString(Status status) const {
+std::string Task::statusToDisplay(Status status) const {
     switch (status) {
-        case Status::TODO:
-            return "To-do";
-        case Status::IN_PROGRESS:
-            return "In progress";
-        case Status::DONE:
-            return "Done";
-        default:
-            return "Unknown";
+        case Status::TODO:       return "To-do";
+        case Status::IN_PROGRESS: return "In progress";
+        case Status::DONE:        return "Done";
+        default:                  return "To-do";
     }
 }
 
-Task::Status Task::stringToStatus(const std::string& status){
-    if (status == "To-do") return Status::TODO;
-    if (status == "In progress") return Status::IN_PROGRESS;
-    if (status == "Done") return Status::DONE;
-    return Status::TODO;
+std::string Task::statusToJsonString(Status status) {
+    switch (status) {
+        case Status::TODO:       return "TODO";
+        case Status::IN_PROGRESS: return "IN_PROGRESS";
+        case Status::DONE:        return "DONE";
+        default:                  return "TODO";
+    }
+}
+
+Task::Status Task::jsonStringToStatus(const std::string &status) {
+    if (status == "TODO") return Task::Status::TODO;
+    if (status == "IN_PROGRESS") return Task::Status::IN_PROGRESS;
+    if (status == "DONE") return Task::Status::DONE;
+    return Task::Status::TODO;
 }
 
 std::string Task::nowToString() {
