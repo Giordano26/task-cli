@@ -13,10 +13,10 @@ Task::Task(const std::string& id, const std::string& description)
       updatedAt(nowToString())
 { }
 
-Task::Task(const std::string& id, 
-           const std::string& description, 
+Task::Task(const std::string& id,
+           const std::string& description,
            Status status,
-           const std::string& createdAt, 
+           const std::string& createdAt,
            const std::string& updatedAt)
  : id(id),
    description(description),
@@ -45,8 +45,12 @@ std::string Task::getDescription() const {
     return description;
 }
 
-std::string Task::getStatus() const {
+std::string Task::getStatusToDisplay() const {
     return statusToDisplay(status);
+}
+
+Task::Status Task::getStatus() const{
+    return status;
 }
 
 std::string Task::getCreatedAt() const {
@@ -85,8 +89,19 @@ Task::Status Task::jsonStringToStatus(const std::string &status) {
 std::string Task::nowToString() {
     const auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
-    
+
     std::stringstream ss;
     ss << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S");
     return ss.str();
 }
+
+ json Task::toJson() const {
+    json j;
+    j["id"] = id;
+    j["description"] = description;
+    j["status"] = statusToJsonString(status);
+    j["createdAt"] = createdAt;
+    j["updatedAt"] = updatedAt;
+
+    return j;
+ }

@@ -20,7 +20,7 @@ int main(){
     std::cout << "getByStatus" << std::endl;
 
     auto allTasksByStatus = taskRepository.getAllByStatus(Task::Status::TODO);
-    
+
     for(const auto& task : allTasksByStatus){
         std::cout << task.getDescription() << std::endl;
     }

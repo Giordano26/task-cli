@@ -10,16 +10,14 @@ using json = nlohmann::json;
 
 class TaskRepository {
 public:
-    void save(const Task& task);
     void deleteById(const std::string& id);
-    
+    Task newTask(const std::string description);
+    void update(const Task& task);
     Task getById(const std::string& id) const;
     std::vector<Task> getAll() const;
     std::vector<Task> getAllByStatus(Task::Status status) const;
-    
+
 private:
-    std::string getNextId();
-    
     // Helpers for JSON
     json readJsonFile() const;
     void writeJsonFile(const json& jsonContent);
