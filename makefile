@@ -1,49 +1,52 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra
 
-# Diretórios
+JSON_INCLUDE =
+ifeq ($(shell uname -s), Darwin)
+    BREW_PREFIX = $(shell command -v brew >/dev/null && brew --prefix)
+    ifneq ($(BREW_PREFIX),)
+        JSON_INCLUDE = -I$(BREW_PREFIX)/include
+    endif
+endif
+
 SRC_DIR = src
 DOMAIN_DIR = $(SRC_DIR)/domain
 REPO_DIR = $(SRC_DIR)/repository
+DTO_DIR = $(SRC_DIR)/dto
+SERVICE_DIR = $(SRC_DIR)/service
 TEST_DIR = tests
-BUILD_DIR = build
 BIN_DIR = bin
 
-# Includes (adiciona todos os diretórios de headers)
-INCLUDES = -I$(DOMAIN_DIR) -I$(REPO_DIR)
+INCLUDES = -I$(DOMAIN_DIR) -I$(REPO_DIR) -I$(DTO_DIR) -I$(SERVICE_DIR) $(JSON_INCLUDE)
 
-# Fontes
 DOMAIN_SRCS = $(DOMAIN_DIR)/Task.cpp
 REPO_SRCS = $(REPO_DIR)/TaskRepository.cpp
+DTO_SRCS = $(DTO_DIR)/TaskDTO.cpp
+SERVICE_SRCS = $(SERVICE_DIR)/TaskService.cpp
+
 MAIN_SRC = $(SRC_DIR)/main.cpp
 TEST_SRC = $(TEST_DIR)/repositoryTest.cpp
 
-# Alvos
 TARGET = $(BIN_DIR)/task-cli
 TEST_TARGET = $(BIN_DIR)/test
 
-# Compilar aplicação principal
 all: $(TARGET)
 
-$(TARGET): $(MAIN_SRC) $(DOMAIN_SRCS) $(REPO_SRCS) | $(BIN_DIR)
+$(TARGET): $(MAIN_SRC) $(DOMAIN_SRCS) $(REPO_SRCS) $(DTO_SRCS) $(SERVICE_SRCS) | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $^ -o $@
 
-# Compilar e rodar testes
 test: $(TEST_TARGET)
 	./$(TEST_TARGET)
 
-$(TEST_TARGET): $(TEST_SRC) $(DOMAIN_SRCS) $(REPO_SRCS) | $(BIN_DIR)
+$(TEST_TARGET): $(TEST_SRC) $(DOMAIN_SRCS) $(REPO_SRCS) $(DTO_SRCS) $(SERVICE_SRCS) | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $^ -o $@
 
-# Criar diretório bin
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-# Limpeza
 clean:
 	rm -rf $(BIN_DIR)
 
-# Rebuild completo
 rebuild: clean all
 
 .PHONY: all test clean rebuild
