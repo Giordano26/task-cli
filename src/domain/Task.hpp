@@ -51,7 +51,6 @@ private:
     std::string updatedAt;
 
     // Helper methods
-    std::string nowToString();
     std::string statusToDisplay(Status status) const;
 
 };

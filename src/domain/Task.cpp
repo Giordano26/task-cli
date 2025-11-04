@@ -1,16 +1,16 @@
 #include "Task.hpp"
-#include <chrono>
+#include "DateUtils.hpp"
 #include <ctime>
-#include <iomanip>
-#include <sstream>
+#include "DateUtils.hpp"
+
 
 
 Task::Task(const std::string& id, const std::string& description)
     : id(id),
       description(description),
       status(Status::TODO),
-      createdAt(nowToString()),
-      updatedAt(nowToString())
+      createdAt(DateUtils::nowToString()),
+      updatedAt(DateUtils::nowToString())
 { }
 
 Task::Task(const std::string& id,
@@ -84,15 +84,6 @@ Task::Status Task::jsonStringToStatus(const std::string &status) {
     if (status == "IN_PROGRESS") return Task::Status::IN_PROGRESS;
     if (status == "DONE") return Task::Status::DONE;
     return Task::Status::TODO;
-}
-
-std::string Task::nowToString() {
-    const auto now = std::chrono::system_clock::now();
-    auto time = std::chrono::system_clock::to_time_t(now);
-
-    std::stringstream ss;
-    ss << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S");
-    return ss.str();
 }
 
  json Task::toJson() const {

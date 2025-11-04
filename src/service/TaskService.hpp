@@ -15,7 +15,7 @@ class TaskService {
 
         TaskDTO createTask(const std::string& description);
         void updateTaskDescription(const std::string& id, const std::string& newDescription);
-        void updateStatus(const std::string& id, Task::Status status);
+        void updateStatus(const std::string& id, Task::Status newStatus);
         void deleteTask(const std::string& id);
 
         TaskDTO getTaskById(const std::string& id) const;
