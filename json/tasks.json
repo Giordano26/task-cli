@@ -1,19 +1,26 @@
 {
-    "nextId": 4,
-    "tasks": [
-        {
-            "createdAt": "2025-10-22 14:30:45",
-            "description": "Task 1",
-            "id": "1",
-            "status": "TODO",
-            "updatedAt": "2025-10-22 14:30:45"
-        },
-        {
-            "createdAt": "2025-10-22 14:31:00",
-            "description": "Task 2",
-            "id": "2",
-            "status": "IN_PROGRESS",
-            "updatedAt": "2025-10-22 15:00:00"
-        }
-    ]
+  "nextId": 4,
+  "tasks": {
+    "1": {
+      "createdAt": "2025-11-17T20:30:00Z",
+      "description": "Revisar o código do TaskRepository",
+      "id": "1",
+      "status": "IN_PROGRESS",
+      "updatedAt": "2025-11-17T20:35:00Z"
+    },
+    "2": {
+      "createdAt": "2025-11-16T14:00:00Z",
+      "description": "Implementar a lógica de 'update'",
+      "id": "2",
+      "status": "DONE",
+      "updatedAt": "2025-11-16T18:00:00Z"
+    },
+    "3": {
+      "createdAt": "2025-11-17T21:00:00Z",
+      "description": "Adicionar novos testes unitários",
+      "id": "3",
+      "status": "TODO",
+      "updatedAt": "2025-11-17T21:00:00Z"
+    }
+  }
 }

@@ -1,6 +1,5 @@
 #include "TaskRepository.hpp"
 #include "Task.hpp"
-#include <algorithm>
 #include <exception>
 #include <nlohmann/json.hpp>
 #include <fstream>
@@ -11,11 +10,11 @@
 TaskRepository::TaskRepository(): data() {
     try {
         data = readJsonFile();
-        isValidTaskArray(data);
+        isValidTaskObject(data);
     } catch(const std::exception& e) {
         data = {
             {"nextId", 1},
-            {"tasks", json::array()}
+            {"tasks", json::object()}
         };
 
         try {
@@ -29,7 +28,6 @@ TaskRepository::TaskRepository(): data() {
 
 Task TaskRepository::newTask(const std::string description) {
     int nextIdValue = data["nextId"].get<int>();
-
     std::string nextId = std::to_string(nextIdValue);
 
     Task newTask = Task(
@@ -38,68 +36,53 @@ Task TaskRepository::newTask(const std::string description) {
     );
 
     data["nextId"] = nextIdValue + 1;
-    data["tasks"].push_back(newTask.toJson());
+    data["tasks"][nextId] = newTask.toJson();
 
     writeJsonFile();
-
     return newTask;
 }
 
 void TaskRepository::update(const Task& task) {
     std::string taskId = task.getId();
-    bool isUpdated = false;
+    bool idExists = data["tasks"].contains(taskId);
 
-    for(auto& taskJson : data["tasks"]){
-        if(taskJson["id"] == taskId){
-            taskJson = task.toJson();
-            isUpdated = true;
-            break;
-        }
-    }
+    if(!idExists){ throw std::runtime_error("Could not find task with id: "+ taskId + " on update"); }
 
-    if(!isUpdated){ throw std::runtime_error("Could not find task with id " + taskId + " on update"); }
+    data["task"][taskId] = task.toJson();
+    writeJsonFile();
+}
+
+void TaskRepository::deleteById(const std::string &taskId) {
+    bool wasErased = data["tasks"].erase(taskId);
+
+    if(!wasErased){ throw std::runtime_error("Could not find task with id: "+ taskId + " on delete"); }
 
     writeJsonFile();
 }
 
-void TaskRepository::deleteById(const std::string &id) {
-    auto& taskArray = data["tasks"];
+Task TaskRepository::getById(const std::string &taskId) const {
+    bool idExists = data["tasks"].contains(taskId);
 
-    auto newEnd = std::remove_if(
-        taskArray.begin(),
-        taskArray.end(),
-        [&id](const json& task){
-            return task["id"] == id;
-        }
-    );
+    if(!idExists){ throw std::runtime_error("Could not find task with id: "+ taskId + " on get by id"); }
 
-    bool idNotFound = newEnd == taskArray.end();
-    if(idNotFound){ throw std::runtime_error("Task with id: " + id + " not found"); }
+    const auto& taskJson = data["tasks"][taskId];
 
-    taskArray.erase(newEnd, taskArray.end());
-    writeJsonFile();
-}
-
-Task TaskRepository::getById(const std::string &id) const {
-    for(const auto& taskJson : data["tasks"]){
-        if(taskJson["id"] == id){
-            return Task(
-                taskJson["id"],
-                taskJson["description"],
-                Task::jsonStringToStatus(taskJson["status"]),
-                taskJson["createdAt"],
-                taskJson["updatedAt"]
-            );
-        }
-    }
-
-    throw std::runtime_error("Task with id: " + id + " not found");
+    return Task(
+            taskJson["id"],
+            taskJson["description"],
+            Task::jsonStringToStatus(taskJson["status"]),
+            taskJson["createdAt"],
+            taskJson["updatedAt"]
+        );
 }
 
 std::vector<Task> TaskRepository::getAll() const {
     std::vector<Task> allTasks;
 
-    for(const auto& taskJson : data["tasks"]){
+    for(const auto& item : data["tasks"].items()){
+
+        const auto& taskJson = item.value();
+
         Task task(
             taskJson["id"],
             taskJson["description"],
@@ -117,7 +100,10 @@ std::vector<Task> TaskRepository::getAll() const {
 std::vector<Task> TaskRepository::getAllByStatus(Task::Status status) const{
     std::vector<Task> allTasksByStatus;
 
-    for(const auto& taskJson : data["tasks"]){
+    for(const auto& item : data["tasks"].items()){
+
+        const auto& taskJson = item.value();
+
         if(Task::jsonStringToStatus(taskJson["status"]) == status){
             Task task(
                 taskJson["id"],
@@ -160,7 +146,7 @@ void TaskRepository::writeJsonFile(){
 
 }
 
-void TaskRepository::isValidTaskArray(const json &data){
-    bool isValid = data.contains("tasks") && data["tasks"].is_array();
+void TaskRepository::isValidTaskObject(const json &data){
+    bool isValid = data.contains("tasks") && data["tasks"].is_object();
     if(!isValid){ throw std::runtime_error("The opened json file does not contain a valid task component"); }
 }
