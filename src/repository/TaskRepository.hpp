@@ -1,5 +1,6 @@
 #ifndef TASKREPOSITORY_H
 #define TASKREPOSITORY_H
+#define JSONPATH "json/tasks.json"
 
 #include <string>
 #include <vector>
@@ -10,6 +11,8 @@ using json = nlohmann::json;
 
 class TaskRepository {
 public:
+    TaskRepository();
+
     void deleteById(const std::string& id);
     Task newTask(const std::string description);
     void update(const Task& task);
@@ -18,10 +21,11 @@ public:
     std::vector<Task> getAllByStatus(Task::Status status) const;
 
 private:
+    json data;
     // Helpers for JSON
     json readJsonFile() const;
-    void writeJsonFile(const json& jsonContent);
-    static bool isValidTaskArray(const json &data);
+    void writeJsonFile();
+    void isValidTaskArray(const json &data);
 };
 
 #endif
